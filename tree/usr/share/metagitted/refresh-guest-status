@@ -36,7 +36,7 @@ _resolve_host() {
 
     elif [[ $_host =~ \.lxc$ ]]; then
         local _lxc_name=$(echo "$_host" | sed 's/\.lxc$//')
-        _ip=$(lxc-info -i -H -n "$_lxc_name")
+        _ip=$(lxc-info -i -H -n "$_lxc_name" | head -n 1)
         if [ $? -ne 0 ]; then
             _log "Warning: LXC container is not running or does not have an IP: $_lxc_name"
             return 1
