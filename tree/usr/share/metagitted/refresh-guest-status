@@ -36,7 +36,7 @@ _resolve_host() {
 
     elif [[ $_host =~ \.lxc$ ]]; then
         local _lxc_name=$(echo "$_host" | sed 's/\.lxc$//')
-        _ip=$(lxc-info -i -H -n "$_lxc_name")
+        _ip=$(lxc-info -i -H -n "$_lxc_name" | head -n 1)
         if [ $? -ne 0 ]; then
             _log "Warning: LXC container is not running or does not have an IP: $_lxc_name"
             return 1
@@ -76,6 +76,7 @@ cat /etc/metagitted/ipv4.forwarding.conf | grep -v '^ *#' | grep -v '^ *$' | (
 
         dest_ip=$(_resolve_host "$dest_host")
         [ $? -eq 0 ] || continue
+        [ -n "$dest_ip" ] || continue
         _log "Forward $protocol from $src_host:$src_port (IP=$src_ip) to $dest_host:$dest_port (IP=$dest_ip)"
 
         chain="PREROUTING"
