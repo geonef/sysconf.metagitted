@@ -2,7 +2,11 @@
 
 . /usr/lib/sysconf.base/common.sh
 
-sysconf_require_packages lxc lxc-templates
+_packages=
+_packages="$_packages lxc lxc-templates xz-utils maildir-utils psmisc wget postfix"
+_packages="$_packages net-tools"  # for the ifconfig tool used by refresh-guest-status
+
+sysconf_require_packages $_packages
 
 # Reload dnsmasq in case /etc/lxc/dnsmasq.hosts has changed
 killall -HUP dnsmasq
