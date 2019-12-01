@@ -127,8 +127,14 @@ cat /etc/metagitted/ipv4.forwarding.conf | grep -v '^ *#' | grep -v '^ *$' | (
 
         fi
 
-        chain="$chain -p $protocol --dport $src_port -j DNAT --to $dest_ip:$dest_port"
-        filter="$filter.* -p $protocol.* --dport $src_port [^ ]+"
+        filter="$filter.* -p $protocol.*"
+        if [ "$src_port" = '*' ]; then
+            chain="$chain -p $protocol -j DNAT --to $dest_ip"
+        else
+            chain="$chain -p $protocol --dport $src_port -j DNAT --to $dest_ip:$dest_port"
+            filter="$filter --dport $src_port"
+        fi
+        filter="$filter [^ ]+"
 
         _log "src_label: $src_label"
         _log "filter: $filter"
